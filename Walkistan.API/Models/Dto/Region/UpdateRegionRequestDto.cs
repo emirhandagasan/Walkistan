@@ -9,7 +9,8 @@ namespace Walkistan.API.Models.Dto.Region
         [MaxLength(20, ErrorMessage = "Name can not be over 20 characters")]
         public string Name { get; set; }
 
-        [MaxLength(200, ErrorMessage = "Name can not be over 200 characters")]
+
+        [MaxLength(1000, ErrorMessage = "Image Url can not be over 1000 characters")]
         public string? RegionImageUrl { get; set; }
     }
 }
