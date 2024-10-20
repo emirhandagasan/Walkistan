@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Walkistan.API.Data;
+using Walkistan.API.Helpers;
 using Walkistan.API.Interfaces;
 using Walkistan.API.Models.Domain;
 
@@ -21,9 +22,49 @@ namespace Walkistan.API.Repositories
             return walk;
         }
 
-        public async Task<List<Walk>> GetAllAsync()
+        public async Task<List<Walk>> GetAllAsync(WalkQueryObject walkQueryObject)
         {
-            return await _db.Walks.Include("Region").Include("Difficulty").ToListAsync();
+            var walks = _db.Walks.Include("Region").Include("Difficulty").AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(walkQueryObject.Name))
+            {
+                walks = walks.Where(x => x.Name.Contains(walkQueryObject.Name));
+            }
+
+            if (!string.IsNullOrWhiteSpace(walkQueryObject.RegionName))
+            {
+                walks = walks.Where(x => x.Region.Name.Contains(walkQueryObject.RegionName));
+            }
+
+            if (!string.IsNullOrWhiteSpace(walkQueryObject.DifficultyName))
+            {
+                walks = walks.Where(x => x.Difficulty.Name.Contains(walkQueryObject.DifficultyName));
+            }
+
+            if (!string.IsNullOrWhiteSpace(walkQueryObject.SortBy))
+            {
+                if(walkQueryObject.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walkQueryObject.IsDecsending ? 
+                        walks.OrderByDescending(w => w.Name) : walks.OrderBy(w => w.Name);
+                }
+
+                else if(walkQueryObject.SortBy.Equals("Region", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walkQueryObject.IsDecsending ?
+                        walks.OrderByDescending(w => w.Region.Name) : walks.OrderBy(w => w.Region.Name);
+                }
+
+                else if(walkQueryObject.SortBy.Equals("Length", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walkQueryObject.IsDecsending ?
+                        walks.OrderByDescending(w => w.LengthInKm) : walks.OrderBy(w => w.LengthInKm);
+                }
+            }
+
+            var skipNumber = (walkQueryObject.PageNumber - 1) * (walkQueryObject.PageSize);
+
+            return await walks.Skip(skipNumber).Take(walkQueryObject.PageSize).ToListAsync();
         }
 
         public async Task<Walk?> GetByIdAsync(int id)

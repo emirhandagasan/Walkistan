@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Walkistan.API.Helpers;
 using Walkistan.API.Interfaces;
 using Walkistan.API.Models.Domain;
 using Walkistan.API.Models.Dto.Walk;
@@ -19,9 +20,9 @@ namespace Walkistan.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] WalkQueryObject walkQuery)
         {
-            var walksDomainModel = await _walkRepository.GetAllAsync();
+            var walksDomainModel = await _walkRepository.GetAllAsync(walkQuery);
 
             return Ok(_mapper.Map<List<WalkDto>>(walksDomainModel));
         }
@@ -49,11 +50,11 @@ namespace Walkistan.API.Controllers
                 return BadRequest(ModelState);
 
             // AddWalkDto to Walk Domain Model
-            var deletedWalkDomainModel = _mapper.Map<Walk>(addWalkRequestDto);
+            var walkDomainModel = _mapper.Map<Walk>(addWalkRequestDto);
 
-            await _walkRepository.CreateAsync(deletedWalkDomainModel);
+            await _walkRepository.CreateAsync(walkDomainModel);
 
-            var walkDto = _mapper.Map<WalkDto>(deletedWalkDomainModel);
+            var walkDto = _mapper.Map<WalkDto>(walkDomainModel);
 
             return CreatedAtAction(nameof(Get), new {id = walkDto.Id}, walkDto);
         }

@@ -18,7 +18,7 @@ namespace Walkistan.API.Models.Dto.Walk
 
         [Required]
         [Range(3, 50, ErrorMessage = "Length must be between 3 and 50")]
-        public double LengthInKm { get; set; }
+        public int LengthInKm { get; set; }
 
 
         [MaxLength(1000, ErrorMessage = "Name can not be over 1000 characters")]
