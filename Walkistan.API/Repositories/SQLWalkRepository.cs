@@ -110,6 +110,5 @@ namespace Walkistan.API.Repositories
 
             return existingWalk;
         }
-
     }
 }

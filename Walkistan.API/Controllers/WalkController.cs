@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Walkistan.API.Helpers;
 using Walkistan.API.Interfaces;
@@ -20,6 +21,7 @@ namespace Walkistan.API.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetAll([FromQuery] WalkQueryObject walkQuery)
         {
             var walksDomainModel = await _walkRepository.GetAllAsync(walkQuery);
@@ -30,6 +32,7 @@ namespace Walkistan.API.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> Get([FromRoute]int id)
         {
             var existingWalk = await _walkRepository.GetByIdAsync(id);
@@ -44,6 +47,7 @@ namespace Walkistan.API.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Create([FromBody] AddWalkRequestDto addWalkRequestDto)
         {
             if (!ModelState.IsValid)
@@ -62,6 +66,7 @@ namespace Walkistan.API.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update([FromRoute] int id, 
             [FromBody] UpdateWalkRequestDto updateWalkRequestDto)
         {
@@ -84,6 +89,7 @@ namespace Walkistan.API.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var walkDomainModel = await _walkRepository.DeleteAsync(id);

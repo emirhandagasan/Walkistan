@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace Walkistan.API.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetAll()
         {
             var regionsDomain = await _regionRepository.GetAllAsync();
@@ -34,6 +36,7 @@ namespace Walkistan.API.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             var regionDomain = await _regionRepository.GetByIdAsync(id);
@@ -48,6 +51,7 @@ namespace Walkistan.API.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
             if (!ModelState.IsValid)
@@ -68,6 +72,7 @@ namespace Walkistan.API.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update([FromRoute] int id,
             [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
@@ -90,6 +95,7 @@ namespace Walkistan.API.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var domainRegion = await _regionRepository.DeleteAsync(id);
