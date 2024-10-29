@@ -11,8 +11,8 @@ using Walkistan.API.Data;
 namespace Walkistan.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241019231932_Initial Migration with Seeds")]
-    partial class InitialMigrationwithSeeds
+    [Migration("20241027232525_Initial Migration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,6 +56,37 @@ namespace Walkistan.API.Migrations
                             Id = 3,
                             Name = "Hard"
                         });
+                });
+
+            modelBuilder.Entity("Walkistan.API.Models.Domain.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileExtension")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("FileSizeInBytes")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("Walkistan.API.Models.Domain.Region", b =>
